@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Portfolio | Business Analytics & Solutions Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+        .mermaid { background: transparent !important; }
+
+        /* Force the rendered diagram to scale with its container instead of
+           overflowing or relying on a horizontal scrollbar, so the whole
+           figure stays visible as the window is resized. */
+        .mermaid svg {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100%;
+        }
+
+        /* ---------- Diagram node interactivity ---------- */
+        .node { cursor: pointer !important; transform-box: fill-box; transform-origin: center; transition: transform 0.25s ease, filter 0.25s ease; }
+        .node:hover { filter: brightness(0.95) drop-shadow(0 4px 8px rgba(79,70,229,0.25)); transform: scale(1.06); }
+        .node:active { transform: scale(0.98); }
+
+        /* Gentle ambient pulse so nodes read as "alive"/clickable even before hover.
+           Animates stroke width/opacity rather than `filter`, since animating
+           drop-shadow filters on several SVG elements at once triggers a known
+           Chrome GPU-compositing flicker ("tile glitter"). Stroke is cheap to
+           repaint and doesn't touch the filter/compositing pipeline. */
+        .node rect, .node polygon, .node circle {
+            animation: nodePulse 3.2s ease-in-out infinite;
+            vector-effect: non-scaling-stroke;
+        }
+        .node:nth-of-type(2n) rect, .node:nth-of-type(2n) polygon, .node:nth-of-type(2n) circle {
+            animation-delay: 1.1s;
+        }
+        .node:nth-of-type(3n) rect, .node:nth-of-type(3n) polygon, .node:nth-of-type(3n) circle {
+            animation-delay: 2s;
+        }
+        @keyframes nodePulse {
+            0%, 100% { stroke-opacity: 1; stroke-width: 2px; }
+            50% { stroke-opacity: 0.55; stroke-width: 3.5px; }
+        }
+
+        /* Animated "flow" along the connecting edges, like data moving through the pipeline */
+        .mermaid .edgePath path {
+            stroke-dasharray: 6 5;
+            animation: flowDash 1.2s linear infinite;
+        }
+        @keyframes flowDash {
+            to { stroke-dashoffset: -22; }
+        }
+
+        /* Edge labels fade in slightly after the lines for a layered reveal */
+        .mermaid .edgeLabel {
+            animation: fadeIn 0.6s ease both;
+            animation-delay: 0.4s;
+        }
+
+        /* Diagram draw-in on scroll into view */
+        .diagram-wrap { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .diagram-wrap.in-view { opacity: 1; transform: translateY(0); }
+
+        /* Generic scroll-reveal utility for sections/cards */
+        .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ---------- Modal open/close animation ---------- */
+        .modal-overlay {
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+        }
+        .modal-overlay.modal-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-panel {
+            transform: scale(0.92) translateY(8px);
+            opacity: 0;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+        }
+        .modal-overlay.modal-open .modal-panel {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .node rect, .node polygon, .node circle,
+            .mermaid .edgePath path,
+            .mermaid .edgeLabel,
+            .diagram-wrap, .reveal,
+            .modal-overlay, .modal-panel {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <span class="text-xl font-bold text-slate-900 tracking-tight">Gomolemo S. Moitobi</span>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-gray-600 hover:text-indigo-600 font-medium transition">About</a>
+                    <a href="#projects" class="text-gray-600 hover:text-indigo-600 font-medium transition">Projects</a>
+                    <a href="#workflows" class="text-gray-600 hover:text-indigo-600 font-medium transition">Interactive Blueprints</a>
+                    <a href="#experience" class="text-gray-600 hover:text-indigo-600 font-medium transition">Experience</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+            <div class="md:col-span-2 space-y-6">
+                <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                    Business Analytics & Evolving Solutions Architect
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+                    Bridging Data Insights with Scalable System Architecture
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    I specialize in engineering automated data pipelines, optimizing operational workflows, and converting complex datasets into actionable business intelligence. Currently expanding my expertise into cloud enterprise architecture to design robust, high-availability technical ecosystems.
+                </p>
+                <div class="flex flex-wrap gap-2 pt-2">
+                    <span class="px-3 py-1 bg-gray-100 rounded text-sm text-gray-700 font-medium">Python</span>
+                    <span class="px-3 py-1 bg-gray-100 rounded text-sm text-gray-700 font-medium">R</span>
+                    <span class="px-3 py-1 bg-gray-100 rounded text-sm text-gray-700 font-medium">Power BI</span>
+                    <span class="px-3 py-1 bg-gray-100 rounded text-sm text-gray-700 font-medium">Advanced Excel</span>
+                    <span class="px-3 py-1 bg-gray-100 rounded text-sm text-gray-700 font-medium">SQL</span>
+                    <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded text-sm font-semibold">Cloud Architecture (Target Dec 2026)</span>
+                </div>
+            </div>
+            <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl aspect-square flex flex-col justify-center items-center text-white p-8 shadow-lg">
+                <i class="fa-solid fa-network-wired text-5xl mb-4"></i>
+                <p class="font-bold text-xl text-center">Data pipelines, Automation & System Design</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="py-20 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Featured Technical Work</h2>
+                <p class="text-gray-600 mt-2">Production-ready prototypes, analytics modules, and end-to-end pipelines.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="reveal bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <div class="text-indigo-600"><i class="fa-solid fa-gas-pump text-2xl"></i></div>
+                        <h3 class="text-xl font-bold text-slate-900">Automated Fuel Depot Invoice System</h3>
+                        <p class="text-gray-600 text-sm">
+                            An integrated data validation framework connecting online web-form APIs directly to transaction tracking databases, replacing manual reconciliation logs.
+                        </p>
+                        <div class="pt-2">
+                            <a href="#fuel-depot-workflow" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-700 group">
+                                <span>Explore Interactive Workflow</span>
+                                <i class="fa-solid fa-arrow-right ml-1 text-xs transition-transform group-hover:translate-x-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-wrap gap-2">
+                        <span class="px-2 py-0.5 bg-white border rounded text-xs text-gray-600">Python Logic</span>
+                        <span class="px-2 py-0.5 bg-white border rounded text-xs text-gray-600">API Webhooks</span>
+                    </div>
+                </div>
+
+                <div class="reveal bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <div class="text-indigo-600"><i class="fa-solid fa-building-user text-2xl"></i></div>
+                        <h3 class="text-xl font-bold text-slate-900">Rental Property Management ERP</h3>
+                        <p class="text-gray-600 text-sm">
+                            An event-driven relational database prototype managing real estate assets, utilizing state-change triggers to run automated tenant and stakeholder notifications.
+                        </p>
+                        <div class="pt-2">
+                            <a href="#property-erp-workflow" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-700 group">
+                                <span>Explore Interactive Workflow</span>
+                                <i class="fa-solid fa-arrow-right ml-1 text-xs transition-transform group-hover:translate-x-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-wrap gap-2">
+                        <span class="px-2 py-0.5 bg-white border rounded text-xs text-gray-600">Relational DB</span>
+                        <span class="px-2 py-0.5 bg-white border rounded text-xs text-gray-600">Event Triggers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="workflows" class="py-20 bg-white border-t border-gray-100">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-32">
+            
+            <div id="fuel-depot-workflow" class="scroll-mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Interactive Blueprint 01</span>
+                    <h3 class="text-2xl font-bold text-slate-900">Fuel Depot Invoicing Pipeline</h3>
+                    <p class="text-sm text-gray-600">
+                        <strong>Click on the colored nodes</strong> in the diagram to inspect my exact technical implementation layers, validation boundaries, and error logging logic.
+                    </p>
+                    <div class="space-y-3 text-sm text-gray-600 border-l-2 border-indigo-50 pl-4">
+                        <p><strong>Situation:</strong> Financial logging exposed to entry delay and data duplicate risks due to manual cross-referencing loops.</p>
+                        <p><strong>Result:</strong> Realized seamless transaction validation, verified ledger fidelity, and accelerated operational visibility.</p>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 min-w-0 bg-slate-50 p-6 rounded-xl border border-gray-200 shadow-inner overflow-x-auto text-center diagram-wrap">
+                    <p class="text-xs font-semibold uppercase text-gray-400 mb-4 tracking-wider"><i class="fa-solid fa-pointer mr-2"></i>Click Colored Blocks to expand</p>
+                    <div class="mermaid">
+                        graph TD
+                            A[User Form Submission] -->|POST JSON Webhook Payload| Node_API(API Ingestion Gateway)
+                            Node_API --> Node_Python{Python Validation Core}
+                            Node_Python -->|Success Matrix True| D[Commit Record to Central Database Ledger]
+                            Node_Python -->|Validation Fails False| Node_Error[Intercept Payload & Trigger Admin Error Log]
+                            
+                            click Node_API openModal "Click to expand details"
+                            click Node_Python openModal "Click to expand details"
+                            click Node_Error openModal "Click to expand details"
+                            
+                            style Node_API fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,cursor:pointer
+                            style Node_Python fill:#e0e7ff,stroke:#4f46e5,stroke-width:2px,cursor:pointer
+                            style Node_Error fill:#fee2e2,stroke:#ef4444,stroke-width:2px,cursor:pointer
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-gray-100">
+
+            <div id="property-erp-workflow" class="scroll-mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Interactive Blueprint 02</span>
+                    <h3 class="text-2xl font-bold text-slate-900">Rental Property ERP State Trigger</h3>
+                    <p class="text-sm text-gray-600">
+                        <strong>Click on the colored nodes</strong> to reveal the specific architectural integration patterns used to synchronize relational mutations with communication sublayers.
+                    </p>
+                </div>
+                <div class="lg:col-span-7 min-w-0 bg-slate-50 p-6 rounded-xl border border-gray-200 shadow-inner overflow-x-auto text-center diagram-wrap">
+                    <p class="text-xs font-semibold uppercase text-gray-400 mb-4 tracking-wider"><i class="fa-solid fa-pointer mr-2"></i>Click Colored Blocks to expand</p>
+                    <div class="mermaid">
+                        graph TD
+                            A[Property Database Record Change] --> Node_State{Relational State Evaluator}
+                            Node_State -->|Trigger Condition Met| Node_Comm[Initiate Communication Layer API]
+                            Node_Comm --> D[Automated Dispatch to Stakeholder Logs]
+                            
+                            click Node_State openModal "Click to expand details"
+                            click Node_Comm openModal "Click to expand details"
+                            
+                            style Node_State fill:#e0e7ff,stroke:#4f46e5,stroke-width:2px,cursor:pointer
+                            style Node_Comm fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,cursor:pointer
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="modal-api" class="modal-overlay hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="modal-panel bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-start">
+                <h4 class="text-lg font-bold text-slate-900">API Ingestion Layer</h4>
+                <button onclick="closeModal('modal-api')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                <strong>How I Achieved the Solution:</strong> Implemented webhooks natively bound to client front-end environments. Upon form submittal, transactional mutations are structured as nested JSON payloads and pushed instantly via secure POST requests, completely dropping manual data handling.
+            </p>
+            <div class="bg-slate-50 p-3 rounded border text-xs font-mono text-gray-700">
+                Status: Webhook Listener Active (POST)
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-python" class="modal-overlay hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="modal-panel bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-start">
+                <h4 class="text-lg font-bold text-slate-900">Python Validation Core</h4>
+                <button onclick="closeModal('modal-python')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                <strong>How I Achieved the Solution:</strong> Programmed logic rules checking for missing database strings, performing unique record string hashing to prevent double-billing occurrences, and mathematically cross-calculating volume matrices against unit indexes before allowing file execution.
+            </p>
+            <div class="bg-slate-50 p-3 rounded border text-xs font-mono text-indigo-700">
+                assert volume * unit_price == total_amount
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-error" class="modal-overlay hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="modal-panel bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-start">
+                <h4 class="text-lg font-bold text-slate-900">Error Boundary Interception</h4>
+                <button onclick="closeModal('modal-error')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                <strong>How I Achieved the Solution:</strong> Isolated raw payload anomalies by creating a state redirect mechanism. If data structural validations drop to false, execution breaks safely and sends error vectors into an administrative log repository to block main ledger corruption.
+            </p>
+        </div>
+    </div>
+
+    <div id="modal-state" class="modal-overlay hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="modal-panel bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-start">
+                <h4 class="text-lg font-bold text-slate-900">Relational State Evaluator</h4>
+                <button onclick="closeModal('modal-state')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                <strong>How I Achieved the Solution:</strong> Configured database logic layers to track transaction state mutations. This engine acts as an internal listener, constantly comparing historical record parameters against updated state modifications to pinpoint anomalies instantly.
+            </p>
+        </div>
+    </div>
+
+    <div id="modal-comm" class="modal-overlay hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="modal-panel bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-start">
+                <h4 class="text-lg font-bold text-slate-900">Communication Interface Sublayer</h4>
+                <button onclick="closeModal('modal-comm')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                <strong>How I Achieved the Solution:</strong> Integrated structural message generation functions into database trigger paths. Once a state update condition tests positive, the application dynamically resolves variables, establishes API handshakes, and dispatches real-time stakeholder updates.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Mermaid securely passes the Node ID (e.g. "Node_API") to this function when clicked
+        window.openModal = function(nodeId) {
+
+            // Map the diagram Node IDs to the HTML Modal IDs
+            const modalMap = {
+                'Node_API': 'modal-api',
+                'Node_Python': 'modal-python',
+                'Node_Error': 'modal-error',
+                'Node_State': 'modal-state',
+                'Node_Comm': 'modal-comm'
+            };
+
+            const targetModalId = modalMap[nodeId];
+            const targetModal = document.getElementById(targetModalId);
+
+            if (targetModal) {
+                targetModal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden'); // Lock background scroll
+                // Defer adding the "open" class one frame so the browser registers
+                // the starting (hidden/scaled-down) state before transitioning in.
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        targetModal.classList.add('modal-open');
+                    });
+                });
+            }
+        };
+
+        window.closeModal = function(id) {
+            const targetModal = document.getElementById(id);
+            if (targetModal) {
+                targetModal.classList.remove('modal-open');
+                document.body.classList.remove('overflow-hidden');
+                // Wait for the fade/scale-out transition to finish before hiding,
+                // so the modal doesn't just snap away.
+                const handleEnd = () => {
+                    targetModal.classList.add('hidden');
+                    targetModal.removeEventListener('transitionend', handleEnd);
+                };
+                targetModal.addEventListener('transitionend', handleEnd);
+                // Fallback in case transitionend doesn't fire (e.g. reduced motion)
+                setTimeout(() => targetModal.classList.add('hidden'), 300);
+            }
+        };
+
+        // Close on background click (not when clicking inside the panel)
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                closeModal(event.target.id);
+            }
+        };
+
+        // Close on Escape key
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.modal-open').forEach(modal => {
+                    closeModal(modal.id);
+                });
+            }
+        });
+
+        // Scroll-reveal: fade/slide elements in as they enter the viewport
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal, .diagram-wrap').forEach(el => revealObserver.observe(el));
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose'
+        });
+
+        // Mermaid renders asynchronously and replaces each .mermaid div's contents
+        // with fresh SVG, so any wrapper .diagram-wrap that was already revealed
+        // still works because the wrapper itself isn't replaced -- only its child.
+        // We just make sure newly inserted SVGs are observed too, in case they
+        // render after the initial observer pass (e.g. on slow connections).
+        const lateObserver = new MutationObserver(() => {
+            document.querySelectorAll('.diagram-wrap:not(.in-view)').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    el.classList.add('in-view');
+                }
+            });
+        });
+        document.querySelectorAll('.mermaid').forEach(el => {
+            lateObserver.observe(el, { childList: true });
+        });
+    </script>
+</body>
+</html>
